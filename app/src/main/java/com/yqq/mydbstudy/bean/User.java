@@ -33,6 +33,18 @@ public class User implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "User{" +
+                "mName='" + mName + '\'' +
+                ", mAge='" + mAge + '\'' +
+                ", mSex='" + mSex + '\'' +
+                ", mCardNum='" + mCardNum + '\'' +
+                ", mAddr='" + mAddr + '\'' +
+                ", mMark='" + mMark + '\'' +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         int result = mName != null ? mName.hashCode() : 0;
         result = 31 * result + (mAge != null ? mAge.hashCode() : 0);

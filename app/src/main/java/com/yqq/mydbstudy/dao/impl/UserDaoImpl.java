@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.tencent.wcdb.database.SQLiteDatabase;
+import com.tencent.wcdb.database.SQLiteStatement;
 import com.yqq.mydbstudy.bean.User;
 import com.yqq.mydbstudy.dao.DatabaseFiled;
 import com.yqq.mydbstudy.dao.MyDbHelper;
@@ -27,6 +28,7 @@ public class UserDaoImpl implements UserDao {
         myDbHelper=MyDbHelper.getInstance(ctx);
         myDbHelper.setWriteAheadLoggingEnabled(true);//支持并发
     }
+    //REPLACE INTO 去重 UNIQUE约束
     @Override
     public boolean addUser(User user) {
         SQLiteDatabase database = null;
@@ -54,9 +56,39 @@ public class UserDaoImpl implements UserDao {
 
 
     }
-
+    //批量操作还可以使用sql预编译进行优化
     @Override
     public boolean addUser4Many(List<User> users) {
+//        SQLiteDatabase database = null;
+//        try{
+//            database = myDbHelper.getWritableDatabase();
+//            database.beginTransaction();
+//            if(database.isOpen()){
+//                String sql="INSERT INTO "+mTableName+"("+ DatabaseFiled.COL_NAME+","+DatabaseFiled.COL_AGE+","+
+//                        DatabaseFiled.COL_CARDNUM+","+
+//                        DatabaseFiled.COL_SEX+","
+//                        +DatabaseFiled.COL_ADDR+")VALUES(?,?,?,?,?)";
+//              for(User user:users){
+//                  int sex = user.mSex.equals("M") ? 1 : 0;
+//                  database.execSQL(sql,new Object[]{user.mName,Integer.valueOf(user.mAge),user.mCardNum,sex,user.mAddr});
+//
+//              }
+//                database.setTransactionSuccessful();
+//                Log.e(TAG,"数据批量操作完成");
+//                return true;
+//            }
+//
+//            return false;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            Log.e(TAG,e.toString());
+//            return false;
+//        }finally {
+//            if(null!=database){
+//                database.endTransaction();
+//            }
+//        }
+        //SQL预编译优化
         SQLiteDatabase database = null;
         try{
             database = myDbHelper.getWritableDatabase();
@@ -66,13 +98,35 @@ public class UserDaoImpl implements UserDao {
                         DatabaseFiled.COL_CARDNUM+","+
                         DatabaseFiled.COL_SEX+","
                         +DatabaseFiled.COL_ADDR+")VALUES(?,?,?,?,?)";
-              for(User user:users){
-                  int sex = user.mSex.equals("M") ? 1 : 0;
-                  database.execSQL(sql,new Object[]{user.mName,Integer.valueOf(user.mAge),user.mCardNum,sex,user.mAddr});
+                SQLiteStatement statement = database.compileStatement(sql);
 
-              }
+
+
+
+                for(User user:users){
+                    statement.clearBindings();
+                    if(null!=user.mName) {
+                        statement.bindString(1,user.mName);
+                    }
+                    if(null!=user.mAge) {
+                        statement.bindString(2,user.mAge);
+                    }
+                    if(null!=user.mCardNum) {
+                        statement.bindString(3,user.mCardNum);
+                    }
+
+                    if(null!=user.mSex) {
+                        statement.bindString(4,user.mSex);
+                    }
+
+                    if(null!=user.mAddr) {
+                        statement.bindString(5,user.mAddr);
+                    }
+                    statement.executeInsert();
+
+                }
                 database.setTransactionSuccessful();
-                Log.e(TAG,"数据批量操作完成");
+                Log.e(TAG,"sql预编译数据批量操作完成");
                 return true;
             }
 
@@ -86,8 +140,16 @@ public class UserDaoImpl implements UserDao {
                 database.endTransaction();
             }
         }
-    }
 
+
+
+
+
+
+
+
+    }
+    //查询建索引优化
     @Override
     public List<User> getUserInfo() {
         SQLiteDatabase database = null;
@@ -169,8 +231,8 @@ public class UserDaoImpl implements UserDao {
             database = myDbHelper.getWritableDatabase();
             if(database.isOpen()){
                 String sql="UPDATE  "+mTableName +" SET  "+DatabaseFiled.COL_ADDR+"=?,"+DatabaseFiled.COL_AGE+"=?" +"  WHERE  "+DatabaseFiled.COL_NAME+"=?";
-                database.execSQL(sql,new String[]{user.mAddr,user.mAge});
-
+                database.execSQL(sql,new String[]{user.mAddr,user.mAge,user.mName});
+                    Log.e(TAG,"数据修改成功");
                 return true;
             }
 
@@ -179,6 +241,28 @@ public class UserDaoImpl implements UserDao {
             e.printStackTrace();
             Log.e(TAG,e.toString());
             return false;
+        }
+    }
+
+    @Override
+    public void closeDatabase() {
+        try {
+            SQLiteDatabase database = myDbHelper.getWritableDatabase();
+
+            if (null != database) {
+                database.close();
+                database = null;
+            }
+
+            if (null != myDbHelper) {
+                myDbHelper.close();
+                myDbHelper = null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG,e.toString());
+
         }
     }
 }

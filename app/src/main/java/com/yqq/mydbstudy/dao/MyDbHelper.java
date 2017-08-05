@@ -13,7 +13,7 @@ import com.tencent.wcdb.database.SQLiteOpenHelper;
 public class MyDbHelper extends SQLiteOpenHelper {
     private static final String TAG = "MyDbHelper";
     private static final  String DATABASE_NAME = "test.db";
-    private static int sVersion = 1;
+    private static int sVersion = 2;
 
     private static MyDbHelper sDbHelper;
     private String mTableName="user";//支持多账号登录动态即可
@@ -58,6 +58,9 @@ public class MyDbHelper extends SQLiteOpenHelper {
                        + DatabaseFiled.COL_ADDR
                        + " TEXT ); ");//
                Log.e(TAG,"数据库建表成功");
+
+               db.execSQL("ALTER TABLE  _" + "" + mTableName + " ADD COLUMN "
+                       + DatabaseFiled.COL_MARK + "  TEXT   ");
            } catch (Exception e){
                e.printStackTrace();
                Log.e(TAG,e.toString());
@@ -71,6 +74,14 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 case 1:
                     db.execSQL("ALTER TABLE  _" + "" + mTableName + " ADD COLUMN "
                             + DatabaseFiled.COL_MARK + "  TEXT   ");
+                    //建立索引
+
+                    db.execSQL("CREATE INDEX IF NOT EXISTS _userIndex_ ON _"
+                            + mTableName
+                            + " ( "
+                            + DatabaseFiled.COL_NAME
+                            + "  ); ");//
+
                 case 2:
                 default:
                     break;

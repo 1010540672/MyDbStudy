@@ -15,4 +15,5 @@ public interface UserDao {
     List<User> getUserInfo();
     boolean delUser(User user);
     boolean modifyUser(User user);
+    void closeDatabase();
 }
