@@ -12,10 +12,12 @@ import com.tencent.wcdb.database.SQLiteOpenHelper;
 
 public class MyDbHelper extends SQLiteOpenHelper {
     private static final String TAG = "MyDbHelper";
+    //数据库名称
     private static final  String DATABASE_NAME = "test.db";
+    //数据库版本信息用于数据库升级
     private static int sVersion = 2;
 
-    private static MyDbHelper sDbHelper;
+    private static volatile  MyDbHelper sDbHelper;
     private String mTableName="user";//支持多账号登录动态即可
 
     /**
@@ -44,7 +46,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
            try{
                //建表
-               db.execSQL("CREATE table IF NOT EXISTS _"
+               db.execSQL("CREATE table IF NOT EXISTS "
                        + mTableName
                        + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " //
                        + DatabaseFiled.COL_NAME
@@ -59,7 +61,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
                        + " TEXT ); ");//
                Log.e(TAG,"数据库建表成功");
 
-               db.execSQL("ALTER TABLE  _" + "" + mTableName + " ADD COLUMN "
+               db.execSQL("ALTER TABLE  " + "" + mTableName + " ADD COLUMN "
                        + DatabaseFiled.COL_MARK + "  TEXT   ");
            } catch (Exception e){
                e.printStackTrace();
@@ -72,11 +74,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
         try{
             switch (oldVersion){
                 case 1:
-                    db.execSQL("ALTER TABLE  _" + "" + mTableName + " ADD COLUMN "
+                    db.execSQL("ALTER TABLE  " + "" + mTableName + " ADD COLUMN "
                             + DatabaseFiled.COL_MARK + "  TEXT   ");
                     //建立索引
 
-                    db.execSQL("CREATE INDEX IF NOT EXISTS _userIndex_ ON _"
+                    db.execSQL("CREATE INDEX IF NOT EXISTS _userIndex_ ON  "
                             + mTableName
                             + " ( "
                             + DatabaseFiled.COL_NAME

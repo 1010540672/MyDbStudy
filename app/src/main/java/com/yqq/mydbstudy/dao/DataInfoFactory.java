@@ -13,13 +13,21 @@ public class DataInfoFactory {
 	}
 
 
-	public static synchronized UserDao getUserDao(Context context) {
-		if ( null== MyApplication.getInstance().mUserDao) {
+	public static synchronized UserDao getUserDao(Context context,String type) {
+		switch (type){
+			case "user":
+				if ( null== MyApplication.getInstance().mUserDao) {
 
-			MyApplication.getInstance().mUserDao = new UserDaoImpl(context.getApplicationContext());
+					MyApplication.getInstance().mUserDao = new UserDaoImpl(context.getApplicationContext());
+				}
+				return 	MyApplication.getInstance().mUserDao;
+
+
+
+
 		}
-		return 	MyApplication.getInstance().mUserDao;
 
+	return null;
 	}
 	
 

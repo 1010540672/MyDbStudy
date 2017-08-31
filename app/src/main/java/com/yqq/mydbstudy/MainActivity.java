@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void  add(View view){
         if(null==MyApplication.getInstance().mUserDao){
-            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this);
+            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this,"user");
         }
         ThreadPoolUtils.execute(new Runnable() {
             @Override
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void  read(View view){
         if(null==MyApplication.getInstance().mUserDao){
-            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this);
+            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this,"user");
         }
         ThreadPoolUtils.execute(new Runnable() {
             @Override
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void  delete(View view){
         if(null==MyApplication.getInstance().mUserDao){
-            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this);
+            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this,"user");
         }
 
 
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     public void  modify(View view){
 
         if(null==MyApplication.getInstance().mUserDao){
-            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this);
+            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this,"user");
         }
 
 
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void  manyAadd(View view){
         if(null==MyApplication.getInstance().mUserDao){
-            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this);
+            MyApplication.getInstance().mUserDao= DataInfoFactory.getUserDao(MainActivity.this,"user");
         }
         ThreadPoolUtils.execute(new Runnable() {
             @Override

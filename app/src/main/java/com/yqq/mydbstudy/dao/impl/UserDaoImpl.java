@@ -22,7 +22,7 @@ import java.util.List;
 
 public class UserDaoImpl implements UserDao {
     private static final  String TAG="UserDaoImpl";
-    private String mTableName="_user";
+    private String mTableName="user";
     private MyDbHelper myDbHelper;
     public UserDaoImpl(Context ctx){
         myDbHelper=MyDbHelper.getInstance(ctx);
